@@ -102,5 +102,10 @@ namespace WindwardInstallerAddon
             File.WriteAllText("WindwardHash.txt", FinishedHash.Substring(2, FinishedHash.Length - 2));
 
         }
+
+        private void GameHasher_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

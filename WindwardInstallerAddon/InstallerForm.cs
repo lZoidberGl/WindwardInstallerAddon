@@ -18,7 +18,7 @@ namespace WindwardInstallerAddon
         bool DevMode = false;
         WebClient Client = new WebClient();
         string path = "";
-        string FinishedHash = "";
+        List<string> FinishedHash = new List<string>();
 
         public InstallerForm()
         {
@@ -28,7 +28,7 @@ namespace WindwardInstallerAddon
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.Text = "Установщик Windward v" + Application.ProductVersion + "b";
+            this.Text = "Установщик Windward v" + Application.ProductVersion + "_b2";
             CheckGameStatus();
             CheckForFiles();
             CheckForUpdates();
@@ -55,7 +55,7 @@ namespace WindwardInstallerAddon
 
             if (neededversion > thisversion)
             {
-                MessageBox.Show("Доступно обновление до: " + NewerVers.Text + "a!");
+                MessageBox.Show("Доступно обновление до: " + NewerVers.Text + "b!");
             }
             else
             {
@@ -91,7 +91,7 @@ namespace WindwardInstallerAddon
                     StatusPanel.BackColor = Color.Red;
                     DeleteButton.Enabled = false;
                     UpdateButton.Enabled = false;
-                    InstallButton.Text = "Установить";
+                    InstallButton.Text = "Скачать и установить игру";
                 }
                   
             }
@@ -100,7 +100,7 @@ namespace WindwardInstallerAddon
                 StatusPanel.BackColor = Color.Red;
                 DeleteButton.Enabled = false;
                 UpdateButton.Enabled = false;
-                InstallButton.Text = "Установить";
+                InstallButton.Text = "Скачать и установить игру";
             }
 
 
@@ -167,10 +167,14 @@ namespace WindwardInstallerAddon
         private void InstallButton_Click(object sender, EventArgs e)
         {
             if (InstallButton.Text == "Установить")
+            {
+                CancelDownload.Enabled = true;
                 DownloadGameFiles();
+            }
             else
             {
                 DeleteGame();
+                CancelDownload.Enabled = true;
                 DownloadGameFiles();
             }
             InstallButton.Enabled = false;
@@ -187,22 +191,28 @@ namespace WindwardInstallerAddon
 
         private void Client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            if (File.Exists("Windward.zip"))
+            if (e.Cancelled) { }
+            else
             {
-                MessageBox.Show("Дальше последует установка, укажите место установки. Обратите внимание, что папка для игры будет создана автоматически.");
-                BrowseDirectory();
-            }
+                if (File.Exists("Windward.zip"))
+                {
+                    MessageBox.Show("Дальше последует установка, укажите место установки. Обратите внимание, что папка для игры будет создана автоматически!");
+                    BrowseDirectory();
+                }
 
-            if (File.Exists("GameUpdate.zip"))
-            {
-                MessageBox.Show("Файлы обновления скачаны! Далее последует распаковка.");
-            }
+                if (File.Exists("GameUpdate.zip"))
+                {
+                    MessageBox.Show("Файлы обновления скачаны! Далее последует распаковка.");
+                }
+
+                Unzipper.WorkerSupportsCancellation = true;
+                Unzipper.RunWorkerAsync();
+            }           
 
             ProgressBar.Value = 0;
             Status.Text = "0MB / 0MB    0%";
 
-            Unzipper.WorkerSupportsCancellation = true;
-            Unzipper.RunWorkerAsync();
+            CancelDownload.Enabled = false;
         }
 
         private void DeleteRemainingFiles()
@@ -244,162 +254,201 @@ namespace WindwardInstallerAddon
             Status.Text = "Загрузка: " + mb_recieved + " / " + mb_toRecieve + "          " + e.ProgressPercentage + "%";
         }
 
+        string deb = "";
+        int noneeded = 0;
 
         private void UpdateButton_Click(object sender, EventArgs e)
         {
-           // UpdateButton.Enabled = false;
-            MessageBox.Show("Данная функция еще в разработке! :*(");
+            noneeded = 0;
+            UpdateButton.Enabled = false;
+            MessageBox.Show("Внимание, данная функция все-еще тестируется!\nСейчас будет проведен анализ файлов, что займет от нескольких секунд до 5 минут (зависит от параметров компьютера).");
 
             if (path != "")
             {
+                string[] originalfiles = { @"Windward\steam_api.dll", @"Windward\Windward.exe", @"Windward\WWServer.exe", @"Windward\Windward_Data\level0", @"Windward\Windward_Data\level1", @"Windward\Windward_Data\mainData", @"Windward\Windward_Data\output_log.txt", @"Windward\Windward_Data\PlayerConnectionConfigFile", @"Windward\Windward_Data\resources.assets", @"Windward\Windward_Data\sharedassets0.assets", @"Windward\Windward_Data\sharedassets0.assets.resS", @"Windward\Windward_Data\sharedassets1.assets", @"Windward\Windward_Data\sharedassets2.assets", @"Windward\Windward_Data\Managed\Assembly-CSharp-firstpass.dll", @"Windward\Windward_Data\Managed\Assembly-CSharp.dll", @"Windward\Windward_Data\Managed\Assembly-UnityScript-firstpass.dll", @"Windward\Windward_Data\Managed\Boo.Lang.dll", @"Windward\Windward_Data\Managed\Mono.CSharp.dll", @"Windward\Windward_Data\Managed\Mono.Security.dll", @"Windward\Windward_Data\Managed\mscorlib.dll", @"Windward\Windward_Data\Managed\System.Core.dll", @"Windward\Windward_Data\Managed\System.dll", @"Windward\Windward_Data\Managed\System.Xml.dll", @"Windward\Windward_Data\Managed\TouchScript.dll", @"Windward\Windward_Data\Managed\TouchScript.Windows.dll", @"Windward\Windward_Data\Managed\UnityEngine.dll", @"Windward\Windward_Data\Managed\UnityEngine.UI.dll", @"Windward\Windward_Data\Managed\UnityScript.Lang.dll", @"Windward\Windward_Data\Managed\XInputDotNetPure.dll", @"Windward\Windward_Data\Mono\mono.dll", @"Windward\Windward_Data\Mono\etc\mono\browscap.ini", @"Windward\Windward_Data\Mono\etc\mono\config", @"Windward\Windward_Data\Mono\etc\mono\1.0\DefaultWsdlHelpGenerator.aspx", @"Windward\Windward_Data\Mono\etc\mono\1.0\machine.config", @"Windward\Windward_Data\Mono\etc\mono\2.0\DefaultWsdlHelpGenerator.aspx", @"Windward\Windward_Data\Mono\etc\mono\2.0\machine.config", @"Windward\Windward_Data\Mono\etc\mono\2.0\settings.map", @"Windward\Windward_Data\Mono\etc\mono\2.0\web.config", @"Windward\Windward_Data\Mono\etc\mono\2.0\Browsers\Compat.browser", @"Windward\Windward_Data\Mono\etc\mono\mconfig\config.xml", @"Windward\Windward_Data\Plugins\CSteamworks.dll", @"Windward\Windward_Data\Plugins\steam_api.dll", @"Windward\Windward_Data\Plugins\XInputDotNetPure.dll", @"Windward\Windward_Data\Plugins\XInputInterface.dll", @"Windward\Windward_Data\Resources\unity default resources", @"Windward\Windward_Data\Resources\unity_builtin_extra" };
                 string[] filepaths = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
                 ProgressBar.Style = ProgressBarStyle.Marquee;
                 foreach (string file in filepaths)
                 {
-
-                    GenerateHash(file);
+                  string filenew = file.Remove(0, GamePath.Text.Length - 8);
+                    if (originalfiles.Contains(filenew))
+                    {
+                        GenerateHash(file);
+                    }
+                                           else
+                    {
+                        noneeded++;
+                        deb = deb + filenew + Environment.NewLine;
+                    }
+                      
 
                 }
-                try
-                {
-                    File.WriteAllText("HashedFiles.txt", FinishedHash.Substring(2, FinishedHash.Length - 2));
-                }
-                
-                catch
-                {
-                    File.WriteAllText("HashedFiles.txt", FinishedHash);
-                }
-                ProgressBar.Style = ProgressBarStyle.Continuous;
-
-                DeleteUserFilesFromArray();
+                if (DevMode == true)
+                MessageBox.Show("Ненужных файлов:" + noneeded.ToString() + Environment.NewLine + deb);               
 
                 TryToCompare();
             }
         }
 
-        private void DeleteUserFilesFromArray()
-        {
-            string x1 = @"Windward\Windward_Data\output_log.txt";
-            string x2 = @"Windward\Windward_Data\PlayerConnectionConfigFile";
-
-            string[] lines1 = File.ReadAllLines("WindwardHash.txt");
-            string[] lines2 = File.ReadAllLines("HashedFiles.txt");
-
-            List<string> list = new List<string>(lines2);
-
-            foreach (string x in lines2)
-            {
-
-
-                if (x.Contains(x1))
-                {
-                    list.Remove(x);
-                    lines2 = list.ToArray();
-                    MessageBox.Show("1");
-                }
-
-                if (x.Contains(x2))
-                {
-                    list.Remove(x);
-                    lines2 = list.ToArray();
-                    MessageBox.Show("1");
-                }
-
-            }
-
-            MessageBox.Show("Все файлы:" + Environment.NewLine + string.Join(Environment.NewLine, lines2), "List");
-            string FinishedText = "";
-            foreach (string line in list)
-            {
-               FinishedText = FinishedText + Environment.NewLine + line;
-            }
-            File.WriteAllText("HashedFiles.txt", FinishedText.Substring(2, FinishedText.Length - 2));
-
-
-        }
+        string[] NeedToDownload = {""};
 
         private void TryToCompare()
         {
+            Client.DownloadFile("https://dl.dropboxusercontent.com/s/8c4nrletjevj4tk/WindwardHash.txt?dl=1", "WindwardHash.txt");
             string[] lines1 = File.ReadAllLines("WindwardHash.txt");
-            string[] lines2 = File.ReadAllLines("HashedFiles.txt");
+            string[] lines2 = FinishedHash.ToArray();
 
             List<string> OriginLines = new List<string>(lines1);
-
-            string result = "";
+            List<string> DownloadList = new List<string>(NeedToDownload);
             int passed = 0;
             int notpassed = 0;
-            int notfound = 0;
 
-            int filenumb = 1;
-
-            List<string> indexes = new List<string>();
-            bool areEqual = lines2.SequenceEqual(lines1);
-            for (int line = 0; line < lines1.Length; line++)
+            foreach (string lineOrigin in lines1)
             {
-                if (line < lines2.Length)
+                if (lines2.Contains(lineOrigin))
                 {
-                    if (lines2[line].Contains(lines1[line]))
-                    {                        
-                        result = result + Environment.NewLine + filenumb + ". Прошел!";
-                        filenumb++;
-                        passed++;
-                    }
-                    else
-                    {
-                        indexes.Add(line.ToString());
-                        result = result + Environment.NewLine + filenumb + ". Не прошел!";
-                        filenumb++;
-                        notpassed++;
-                    }
+                    passed++;
                 }
                 else
                 {
-                    indexes.Add(line.ToString());
-                    result = result + Environment.NewLine + filenumb + ". Отсутсвует!";
-                    filenumb++;
-                    notfound++;
+                    notpassed++;
+                    DownloadList.Add(lineOrigin.Substring(0, lineOrigin.Length - 33));
                 }
 
             }
-            //if (DevMode == true)
-            //  MessageBox.Show(result);
-            // else
+            NeedToDownload = DownloadList.ToArray();
+            ProgressBar.Style = ProgressBarStyle.Continuous;
             if (notpassed == 0)
             {
-                    MessageBox.Show("Файлы:\nПрошло проверку: " + passed.ToString() + "\nНе прошло проверку: " + notpassed.ToString() + "\nОтсутсвует:" + notfound.ToString() + "\nИтог: Все файлы последней версии!" + "\n" + areEqual, "Результат");
-            }                
-            else
-            {
-                DialogResult answ = MessageBox.Show("Файлы:\nПрошло проверку: " + passed.ToString() + "\nНе прошло проверку: " + notpassed.ToString() + "\nОтсутсвует:" + notfound.ToString() + "\nХотите-ли обновить файлы, не прошедшие проверку?", "Результат", MessageBoxButtons.YesNo);
-                if(answ == DialogResult.Yes)
+                MessageBox.Show("Файлы:\nПрошло проверку: " + passed.ToString() + "\nНе прошло проверку: " + notpassed.ToString() + "\nИтог: Все файлы последней версии!", "Результат");
+                UpdateButton.Enabled = true;
+                try
                 {
-                    MessageBox.Show("Будет загружено файлов: " + (notpassed+notfound).ToString() + "." );
-                    DowndloadUpdatedFiles(indexes.ToArray());
+                    File.Delete("WindwardHash.txt");
+                }
+                catch { MessageBox.Show("Не удалось удать файл: WindwardHash.txt\nПопытайтесь удалить его вручную!"); }
+            }
+           else
+            {
+                DialogResult answ = MessageBox.Show("Файлы:\nПрошло проверку: " + passed.ToString() + "\nНе прошло проверку: " + notpassed.ToString() + "\nХотите-ли обновить файлы, не прошедшие проверку?", "Результат", MessageBoxButtons.YesNo);
+                if (answ == DialogResult.Yes)
+                {
+                    if (DevMode == true)
+                    MessageBox.Show("Будет загружено файлов: " + notpassed.ToString() + ".\n" + string.Join(Environment.NewLine, NeedToDownload));
+
+                    CreateDirectories();
+                    DowndloadUpdatedFiles(NeedToDownload);
+               }
+            }
+        }
+
+        private void CreateDirectories()
+        {
+            string[] NeededDirectories = {@"Windward\Windward_Data",
+                                          @"Windward\Windward_Data\Managed",
+                                          @"Windward\Windward_Data\Mono",
+                                          @"Windward\Windward_Data\Plugins",
+                                          @"Windward\Windward_Data\Resources",
+                                          @"Windward\Windward_Data\Mono\etc",
+                                          @"Windward\Windward_Data\Mono\etc\mono",
+                                          @"Windward\Windward_Data\Mono\etc\mono\1.0",
+                                          @"Windward\Windward_Data\Mono\etc\mono\2.0",
+                                          @"Windward\Windward_Data\Mono\etc\mono\mconfig",
+                                          @"Windward\Windward_Data\Mono\etc\mono\2.0\Browsers"
+            };
+
+            foreach (string dir in NeededDirectories)
+            {
+                string OwnDir = GamePath.Text.Substring(0, GamePath.Text.Length - 8) + dir;
+                if (!Directory.Exists(OwnDir))
+                {
+                    Directory.CreateDirectory(OwnDir);
                 }
             }
         }
 
-        private void DowndloadUpdatedFiles(string[] index)
+        private bool downloadComplete = false;
+        int fileCount = 0;
+        int fileDownloaded = 1;
+        private void DowndloadUpdatedFiles(string[] FilesToDownload)
         {
             Client.DownloadFile(new Uri("https://dl.dropboxusercontent.com/s/t7oqnvhelk1rtcs/links.txt?dl=1"), "links.txt");
             string[] links = File.ReadAllLines("links.txt");
-            List<string> LinkList = new List<string>(links);
-            List<string> Indexes = new List<string>(index);
 
-            string[] lines1 = File.ReadAllLines("WindwardHash.txt");
-            List<string> Paths = new List<string>(lines1);
+            Client.DownloadProgressChanged += Client_DownloadProgressChangedUpdate;
+            Client.DownloadFileCompleted += Client_DownloadFileCompletedUpdate;
+            
 
-            foreach (string i in Indexes)
+            List<string> ToDownloadList = new List<string>();
+
+            foreach (string link in links)
             {
-              int inta = Convert.ToInt16(i);
-                string pathTo = Paths.ElementAt(inta);
-                int x = pathTo.Length - 33;
-                string PathToConverted = pathTo.Substring(0,x);
-              string res =  LinkList.ElementAt(inta);
-               MessageBox.Show(res + "\n" + PathToConverted);
-               Client.DownloadFileAsync(new Uri(res), Path.Combine(GamePath.Text + PathToConverted.Remove(0,8)));
+                string file = link.Substring(0, link.IndexOf("+"));
+
+                if (FilesToDownload.Contains(file))
+                {
+                    ToDownloadList.Add(link);
+                }
+
             }
 
+            string[] ToDownload = ToDownloadList.ToArray();
+
+            fileCount = ToDownload.Length;
+
+            foreach (string fileToDown in ToDownload)
+            {
+                try
+                {
+                    string file = fileToDown.Substring(0, fileToDown.IndexOf("+"));
+                    CancelDownload.Enabled = true;
+                    Client.DownloadFileAsync(new Uri(fileToDown.Remove(0, fileToDown.IndexOf("+") + 1)), Path.Combine(GamePath.Text, file.Remove(0, 9)));
+                    while (!downloadComplete)
+                    {
+                        Application.DoEvents();
+                    }
+
+                    downloadComplete = false;
+                }
+
+                catch (Exception ex) { MessageBox.Show(ex.Message); }
+            }
+
+        }
+
+        private void Client_DownloadProgressChangedUpdate( object sender, DownloadProgressChangedEventArgs e)
+        {
+            ProgressBar.Value = e.ProgressPercentage;
+            string mb_recieved = BytesToString(e.BytesReceived);
+            string mb_toRecieve = BytesToString(e.TotalBytesToReceive);
+            Status.Text = "Файл: "+ fileDownloaded.ToString() + "/" + fileCount.ToString() + " Загрузка: " + mb_recieved + " / " + mb_toRecieve + "          " + e.ProgressPercentage + "%";
+        }
+
+        private void Client_DownloadFileCompletedUpdate(object sender, AsyncCompletedEventArgs e)
+        {
+            this.BeginInvoke((MethodInvoker)delegate
+            {
+                downloadComplete = true;
+            });
+
+            if (fileDownloaded == fileCount)
+            {
+                MessageBox.Show("Загрузка файлов завершена!");
+                try
+                {
+                    File.Delete("links.txt");
+                    File.Delete("WindwardHash.txt");
+                }
+                catch { MessageBox.Show("Не удалось удалить файлы: links.txt и WindwardHash.txt \n Попытайтесь удалить их вручную!"); }
+                UpdateButton.Enabled = true;
+
+                ProgressBar.Value = 0;
+                Status.Text = "0MB / 0MB    0%";
+            }
+            else
+                fileDownloaded++;
+
+            CancelDownload.Enabled = false;
         }
 
         private void GenerateHash(string pathfile)
@@ -409,7 +458,6 @@ namespace WindwardInstallerAddon
             int byetsread;
             long size;
             long totalBytesRead = 0;
-            string[] originalfiles = { @"Windward\steam_api.dll", @"Windward\Windward.exe", @"Windward\WWServer.exe", @"Windward\Windward_Data\level0", @"Windward\Windward_Data\level1", @"Windward\Windward_Data\mainData", @"Windward\Windward_Data\output_log.txt", @"Windward\Windward_Data\PlayerConnectionConfigFile", @"Windward\Windward_Data\resources.assets", @"Windward\Windward_Data\sharedassets0.assets", @"Windward\Windward_Data\sharedassets0.assets.resS", @"Windward\Windward_Data\sharedassets1.assets", @"Windward\Windward_Data\sharedassets2.assets", @"Windward\Windward_Data\Managed\Assembly-CSharp-firstpass.dll", @"Windward\Windward_Data\Managed\Assembly-CSharp.dll", @"Windward\Windward_Data\Managed\Assembly-UnityScript-firstpass.dll", @"Windward\Windward_Data\Managed\Boo.Lang.dll", @"Windward\Windward_Data\Managed\Mono.CSharp.dll", @"Windward\Windward_Data\Managed\Mono.Security.dll", @"Windward\Windward_Data\Managed\mscorlib.dll", @"Windward\Windward_Data\Managed\System.Core.dll", @"Windward\Windward_Data\Managed\System.dll", @"Windward\Windward_Data\Managed\System.Xml.dll", @"Windward\Windward_Data\Managed\TouchScript.dll", @"Windward\Windward_Data\Managed\TouchScript.Windows.dll", @"Windward\Windward_Data\Managed\UnityEngine.dll", @"Windward\Windward_Data\Managed\UnityEngine.UI.dll", @"Windward\Windward_Data\Managed\UnityScript.Lang.dll", @"Windward\Windward_Data\Managed\XInputDotNetPure.dll", @"Windward\Windward_Data\Mono\mono.dll", @"Windward\Windward_Data\Mono\etc\mono\browscap.ini", @"Windward\Windward_Data\Mono\etc\mono\config", @"Windward\Windward_Data\Mono\etc\mono\1.0\DefaultWsdlHelpGenerator.aspx", @"Windward\Windward_Data\Mono\etc\mono\1.0\machine.config", @"Windward\Windward_Data\Mono\etc\mono\2.0\DefaultWsdlHelpGenerator.aspx", @"Windward\Windward_Data\Mono\etc\mono\2.0\machine.config", @"Windward\Windward_Data\Mono\etc\mono\2.0\settings.map", @"Windward\Windward_Data\Mono\etc\mono\2.0\web.config", @"Windward\Windward_Data\Mono\etc\mono\2.0\Browsers\Compat.browser", @"Windward\Windward_Data\Mono\etc\mono\mconfig\config.xml", @"Windward\Windward_Data\Plugins\CSteamworks.dll", @"Windward\Windward_Data\Plugins\steam_api.dll", @"Windward\Windward_Data\Plugins\XInputDotNetPure.dll", @"Windward\Windward_Data\Plugins\XInputInterface.dll", @"Windward\Windward_Data\Resources\unity default resources", @"Windward\Windward_Data\Resources\unity_builtin_extra" };
 
             using (Stream file = File.OpenRead(pathfile))
             {
@@ -433,7 +481,7 @@ namespace WindwardInstallerAddon
 
                         hasher.TransformFinalBlock(buffer, 0, 0);
 
-                        FinishedHash = FinishedHash + Environment.NewLine + pathfile+ " " + MakeHashString(hasher.Hash)  ;
+                        FinishedHash.Add(pathfile.Remove(0, GamePath.Text.Length-8) + " " + MakeHashString(hasher.Hash));
                 }
             }             
         }
@@ -526,13 +574,13 @@ namespace WindwardInstallerAddon
 
             if (File.Exists("update.zip"))
                 File.Delete("update.zip");
-
+            CancelDownload.Enabled = true;
             Client.DownloadFileAsync(new Uri("https://dl.dropboxusercontent.com/s/t7c0ywbq45wqps0/WIAupdate.zip?dl=1"), "update.zip"); //https://www.dropbox.com/s/t7c0ywbq45wqps0/WIAupdate.zip?dl=0
         }
 
         private void UpdateProg_Click(object sender, EventArgs e)
         {
-            DialogResult answ = MessageBox.Show("Вы уверены, что хотите обновиться до версии: " + NewerVers.Text + "a?","",MessageBoxButtons.YesNo);
+            DialogResult answ = MessageBox.Show("Вы уверены, что хотите обновиться до версии: " + NewerVers.Text + "b?","",MessageBoxButtons.YesNo);
             if (answ == DialogResult.Yes)
             {
                 ProgramUpdateDownload();
@@ -629,6 +677,75 @@ namespace WindwardInstallerAddon
             DevMode = true;
             GameHasher GH = new GameHasher();
             GH.Show();
+        }
+        #region Button Hover
+
+        private void InstallButton_MouseHover(object sender, EventArgs e)
+        {
+            InstallButton.BackgroundImage = Properties.Resources.button2;
+        }
+
+        private void InstallButton_MouseLeave(object sender, EventArgs e)
+        {
+            InstallButton.BackgroundImage = Properties.Resources.Button1;
+        }
+
+        private void UpdateButton_MouseHover(object sender, EventArgs e)
+        {
+            UpdateButton.BackgroundImage = Properties.Resources.button2;
+        }
+
+        private void UpdateButton_MouseLeave(object sender, EventArgs e)
+        {
+            UpdateButton.BackgroundImage = Properties.Resources.Button1;
+        }
+
+        private void DeleteButton_MouseHover(object sender, EventArgs e)
+        {
+            DeleteButton.BackgroundImage = Properties.Resources.button2;
+        }
+
+        private void DeleteButton_MouseLeave(object sender, EventArgs e)
+        {
+            DeleteButton.BackgroundImage = Properties.Resources.Button1;
+        }
+
+        private void UpdateProg_MouseHover(object sender, EventArgs e)
+        {
+            UpdateProg.BackgroundImage = Properties.Resources.button2;
+        }
+
+        private void UpdateProg_MouseLeave(object sender, EventArgs e)
+        {
+            UpdateProg.BackgroundImage = Properties.Resources.Button1;
+        }
+
+        private void BrowseGame_MouseLeave(object sender, EventArgs e)
+        {
+            BrowseGame.BackgroundImage = Properties.Resources.Button1;
+        }
+
+        private void BrowseGame_MouseHover(object sender, EventArgs e)
+        {
+            BrowseGame.BackgroundImage = Properties.Resources.button2;
+        }
+
+        private void CancelDownload_MouseHover(object sender, EventArgs e)
+        {
+            CancelDownload.BackgroundImage = Properties.Resources.button2;
+        }
+
+        private void CancelDownload_MouseLeave(object sender, EventArgs e)
+        {
+            CancelDownload.BackgroundImage = Properties.Resources.Button1;
+        }
+
+        #endregion
+
+        private void CancelDownload_Click(object sender, EventArgs e)
+        {
+            Client.CancelAsync();
+            DeleteRemainingFiles();
         }
     }
 }

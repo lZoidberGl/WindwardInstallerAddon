@@ -45,17 +45,28 @@
             this.Unzipper = new System.ComponentModel.BackgroundWorker();
             this.button1 = new System.Windows.Forms.Button();
             this.DevButton = new System.Windows.Forms.Button();
+            this.CancelDownload = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // InstallButton
             // 
-            this.InstallButton.Location = new System.Drawing.Point(11, 8);
+            this.InstallButton.BackColor = System.Drawing.Color.Transparent;
+            this.InstallButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("InstallButton.BackgroundImage")));
+            this.InstallButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.InstallButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.InstallButton.FlatAppearance.BorderSize = 0;
+            this.InstallButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.InstallButton.Font = new System.Drawing.Font("Segoe Print", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.InstallButton.Location = new System.Drawing.Point(11, 1);
             this.InstallButton.Name = "InstallButton";
-            this.InstallButton.Size = new System.Drawing.Size(100, 23);
+            this.InstallButton.Size = new System.Drawing.Size(311, 30);
             this.InstallButton.TabIndex = 0;
-            this.InstallButton.Text = "Установить";
-            this.InstallButton.UseVisualStyleBackColor = true;
+            this.InstallButton.Text = "Скачать и установить игру";
+            this.Tips.SetToolTip(this.InstallButton, "Устанавливает игру");
+            this.InstallButton.UseVisualStyleBackColor = false;
             this.InstallButton.Click += new System.EventHandler(this.InstallButton_Click);
+            this.InstallButton.MouseLeave += new System.EventHandler(this.InstallButton_MouseLeave);
+            this.InstallButton.MouseHover += new System.EventHandler(this.InstallButton_MouseHover);
             // 
             // GamePath
             // 
@@ -63,7 +74,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.GamePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.GamePath.Location = new System.Drawing.Point(40, 37);
+            this.GamePath.Location = new System.Drawing.Point(40, 133);
             this.GamePath.Name = "GamePath";
             this.GamePath.Size = new System.Drawing.Size(249, 21);
             this.GamePath.TabIndex = 1;
@@ -71,7 +82,7 @@
             // 
             // ProgressBar
             // 
-            this.ProgressBar.Location = new System.Drawing.Point(11, 65);
+            this.ProgressBar.Location = new System.Drawing.Point(11, 161);
             this.ProgressBar.Name = "ProgressBar";
             this.ProgressBar.Size = new System.Drawing.Size(311, 23);
             this.ProgressBar.TabIndex = 2;
@@ -81,7 +92,7 @@
             this.Status.BackColor = System.Drawing.Color.Transparent;
             this.Status.Font = new System.Drawing.Font("Segoe Script", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Status.ForeColor = System.Drawing.Color.Snow;
-            this.Status.Location = new System.Drawing.Point(12, 93);
+            this.Status.Location = new System.Drawing.Point(12, 189);
             this.Status.Name = "Status";
             this.Status.Size = new System.Drawing.Size(310, 23);
             this.Status.TabIndex = 3;
@@ -90,50 +101,90 @@
             // 
             // BrowseGame
             // 
-            this.BrowseGame.Location = new System.Drawing.Point(295, 36);
+            this.BrowseGame.BackColor = System.Drawing.Color.Transparent;
+            this.BrowseGame.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("BrowseGame.BackgroundImage")));
+            this.BrowseGame.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.BrowseGame.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BrowseGame.FlatAppearance.BorderSize = 0;
+            this.BrowseGame.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BrowseGame.Font = new System.Drawing.Font("Segoe Print", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.BrowseGame.Location = new System.Drawing.Point(294, 132);
             this.BrowseGame.Name = "BrowseGame";
             this.BrowseGame.Size = new System.Drawing.Size(28, 23);
             this.BrowseGame.TabIndex = 0;
             this.BrowseGame.Text = "...";
-            this.BrowseGame.UseVisualStyleBackColor = true;
+            this.Tips.SetToolTip(this.BrowseGame, "Открывает проводник");
+            this.BrowseGame.UseVisualStyleBackColor = false;
             this.BrowseGame.Click += new System.EventHandler(this.BrowseGame_Click);
+            this.BrowseGame.MouseLeave += new System.EventHandler(this.BrowseGame_MouseLeave);
+            this.BrowseGame.MouseHover += new System.EventHandler(this.BrowseGame_MouseHover);
             // 
             // UpdateButton
             // 
-            this.UpdateButton.Location = new System.Drawing.Point(117, 8);
+            this.UpdateButton.BackColor = System.Drawing.Color.Transparent;
+            this.UpdateButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("UpdateButton.BackgroundImage")));
+            this.UpdateButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.UpdateButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.UpdateButton.FlatAppearance.BorderSize = 0;
+            this.UpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.UpdateButton.Font = new System.Drawing.Font("Segoe Print", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.UpdateButton.Location = new System.Drawing.Point(11, 32);
             this.UpdateButton.Name = "UpdateButton";
-            this.UpdateButton.Size = new System.Drawing.Size(100, 23);
+            this.UpdateButton.Size = new System.Drawing.Size(311, 30);
             this.UpdateButton.TabIndex = 0;
-            this.UpdateButton.Text = "Обновить";
-            this.UpdateButton.UseVisualStyleBackColor = true;
+            this.UpdateButton.Text = "Обновить игру";
+            this.Tips.SetToolTip(this.UpdateButton, "Обновляет игру");
+            this.UpdateButton.UseVisualStyleBackColor = false;
             this.UpdateButton.Click += new System.EventHandler(this.UpdateButton_Click);
+            this.UpdateButton.MouseLeave += new System.EventHandler(this.UpdateButton_MouseLeave);
+            this.UpdateButton.MouseHover += new System.EventHandler(this.UpdateButton_MouseHover);
             // 
             // DeleteButton
             // 
-            this.DeleteButton.Location = new System.Drawing.Point(223, 8);
+            this.DeleteButton.BackColor = System.Drawing.Color.Transparent;
+            this.DeleteButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("DeleteButton.BackgroundImage")));
+            this.DeleteButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.DeleteButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.DeleteButton.FlatAppearance.BorderSize = 0;
+            this.DeleteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DeleteButton.Font = new System.Drawing.Font("Segoe Print", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DeleteButton.Location = new System.Drawing.Point(11, 63);
             this.DeleteButton.Name = "DeleteButton";
-            this.DeleteButton.Size = new System.Drawing.Size(100, 23);
+            this.DeleteButton.Size = new System.Drawing.Size(311, 30);
             this.DeleteButton.TabIndex = 0;
-            this.DeleteButton.Text = "Удалить";
-            this.DeleteButton.UseVisualStyleBackColor = true;
+            this.DeleteButton.Text = "Удалить игру";
+            this.Tips.SetToolTip(this.DeleteButton, "Удаляет игру");
+            this.DeleteButton.UseVisualStyleBackColor = false;
             this.DeleteButton.Click += new System.EventHandler(this.DeleteButton_Click);
+            this.DeleteButton.MouseLeave += new System.EventHandler(this.DeleteButton_MouseLeave);
+            this.DeleteButton.MouseHover += new System.EventHandler(this.DeleteButton_MouseHover);
             // 
             // StatusPanel
             // 
-            this.StatusPanel.Location = new System.Drawing.Point(39, 36);
+            this.StatusPanel.Location = new System.Drawing.Point(39, 132);
             this.StatusPanel.Name = "StatusPanel";
             this.StatusPanel.Size = new System.Drawing.Size(251, 23);
             this.StatusPanel.TabIndex = 4;
             // 
             // UpdateProg
             // 
-            this.UpdateProg.Location = new System.Drawing.Point(11, 119);
+            this.UpdateProg.BackColor = System.Drawing.Color.Transparent;
+            this.UpdateProg.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("UpdateProg.BackgroundImage")));
+            this.UpdateProg.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.UpdateProg.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.UpdateProg.FlatAppearance.BorderSize = 0;
+            this.UpdateProg.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.UpdateProg.Font = new System.Drawing.Font("Segoe Print", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.UpdateProg.Location = new System.Drawing.Point(11, 211);
             this.UpdateProg.Name = "UpdateProg";
-            this.UpdateProg.Size = new System.Drawing.Size(311, 23);
+            this.UpdateProg.Size = new System.Drawing.Size(311, 30);
             this.UpdateProg.TabIndex = 5;
             this.UpdateProg.Text = "Обновить программу";
-            this.UpdateProg.UseVisualStyleBackColor = true;
+            this.Tips.SetToolTip(this.UpdateProg, "Обновляет программу");
+            this.UpdateProg.UseVisualStyleBackColor = false;
             this.UpdateProg.Click += new System.EventHandler(this.UpdateProg_Click);
+            this.UpdateProg.MouseLeave += new System.EventHandler(this.UpdateProg_MouseLeave);
+            this.UpdateProg.MouseHover += new System.EventHandler(this.UpdateProg_MouseHover);
             // 
             // NewerVers
             // 
@@ -149,9 +200,10 @@
             this.SavePath.BackColor = System.Drawing.Color.Transparent;
             this.SavePath.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("SavePath.BackgroundImage")));
             this.SavePath.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.SavePath.Cursor = System.Windows.Forms.Cursors.Hand;
             this.SavePath.FlatAppearance.BorderSize = 0;
             this.SavePath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SavePath.Location = new System.Drawing.Point(11, 37);
+            this.SavePath.Location = new System.Drawing.Point(11, 133);
             this.SavePath.Name = "SavePath";
             this.SavePath.Size = new System.Drawing.Size(20, 20);
             this.SavePath.TabIndex = 7;
@@ -166,7 +218,8 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(324, 127);
+            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button1.Location = new System.Drawing.Point(322, 227);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(19, 20);
             this.button1.TabIndex = 8;
@@ -176,7 +229,8 @@
             // 
             // DevButton
             // 
-            this.DevButton.Location = new System.Drawing.Point(0, 135);
+            this.DevButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.DevButton.Location = new System.Drawing.Point(-4, 231);
             this.DevButton.Name = "DevButton";
             this.DevButton.Size = new System.Drawing.Size(10, 10);
             this.DevButton.TabIndex = 9;
@@ -185,13 +239,34 @@
             this.DevButton.Visible = false;
             this.DevButton.Click += new System.EventHandler(this.DevButton_Click);
             // 
+            // CancelDownload
+            // 
+            this.CancelDownload.BackColor = System.Drawing.Color.Transparent;
+            this.CancelDownload.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("CancelDownload.BackgroundImage")));
+            this.CancelDownload.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.CancelDownload.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.CancelDownload.Enabled = false;
+            this.CancelDownload.FlatAppearance.BorderSize = 0;
+            this.CancelDownload.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CancelDownload.Font = new System.Drawing.Font("Segoe Print", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.CancelDownload.Location = new System.Drawing.Point(11, 94);
+            this.CancelDownload.Name = "CancelDownload";
+            this.CancelDownload.Size = new System.Drawing.Size(311, 30);
+            this.CancelDownload.TabIndex = 10;
+            this.CancelDownload.Text = "Отменить загрузку";
+            this.CancelDownload.UseVisualStyleBackColor = false;
+            this.CancelDownload.Click += new System.EventHandler(this.CancelDownload_Click);
+            this.CancelDownload.MouseLeave += new System.EventHandler(this.CancelDownload_MouseLeave);
+            this.CancelDownload.MouseHover += new System.EventHandler(this.CancelDownload_MouseHover);
+            // 
             // InstallerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.ClientSize = new System.Drawing.Size(335, 145);
+            this.ClientSize = new System.Drawing.Size(335, 242);
+            this.Controls.Add(this.CancelDownload);
             this.Controls.Add(this.DevButton);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.SavePath);
@@ -235,6 +310,7 @@
         private System.ComponentModel.BackgroundWorker Unzipper;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button DevButton;
+        private System.Windows.Forms.Button CancelDownload;
     }
 }
 

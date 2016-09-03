@@ -100,6 +100,7 @@
             this.Controls.Add(this.listBox1);
             this.Name = "GameHasher";
             this.Text = "GameHasher";
+            this.Load += new System.EventHandler(this.GameHasher_Load);
             this.ResumeLayout(false);
 
         }
